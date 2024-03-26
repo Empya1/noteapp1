@@ -1,0 +1,893 @@
+<MyScreenManager>
+
+<Animage@FitImage>
+	
+
+<MyBs>
+	orientation:"vertical"
+	size_hint_y:None 
+	height:"500dp"
+	md_bg_color: 0,0,0,.05
+		
+	MDBoxLayout: 
+		orientation:"vertical" 
+		adaptive_height:True
+		size_hint_y:.4
+		
+		AnchorLayout:
+				
+			FitImage: 
+				size_hint: None, None
+				size: "100dp","100dp"
+				source:app.logo	
+				radius: self.width//2
+			
+	MDBoxLayout: 
+		orientation:"vertical"
+		size_hint_y: .4
+		
+		
+		MDLabel:
+			
+			text:"Created By EmPya"
+			halign:"center"
+			font_name:app.profont
+			
+		MDLabel: 
+			text:"Notes v 2.5.6"
+			halign:"center"
+			adaptive_height:True
+			font_name:app.profont
+			
+	MDGridLayout: 
+		size_hint_y: .2
+		cols: 1
+		padding:["0dp", "5dp", "0dp", "0dp"]
+		
+		MDCard: 
+			orientation:"vertical"
+			size_hint: .6, None
+			md_bg_color:1,1,1,.03
+			on_press: 
+				app.whats()
+			
+			MDAnchorLayout
+			
+				MDIcon: 
+					icon:"whatsapp"
+					halign:"center"
+					font_size: 55
+				
+			MDAnchorLayout:
+				
+				MDLabel: 
+					text:"Message Me"
+					font_size: 55
+					font_style:"Caption"
+					halign:"center"
+					
+
+<PwdInput>
+	orientation:"vertical"
+	id: pi
+	hint_text:""
+	MDBoxLayout: 
+		md_bg_color: 1,1,1,.5
+		radius: 35
+		padding:["5dp"]
+		MDTextField: 
+			mode:"line"	
+			fill_color: 1,1,1,.07	
+			md_bg_color:self.fill_color
+			hint_text:root.hint_text		
+			radius:[30,30,30,30]
+			pos_hint: {"center_y":.5}
+			text_color:"white"
+			id:mtf
+			valign:"center"
+			line_color_normal: 0,0,0,0
+			line_color_active: 0,0,0,0
+			line_color: "white"
+			password:True
+			line_width:0
+									
+		MDIconButton: 
+			icon:"eye-off"
+			valign:"center"
+			pos_hint: {"center_y":.5}
+			id:mib
+			on_press: 
+				self.icon = "eye-off" if self.icon=="eye" else "eye" 
+				root.toggle(mtf)
+
+<MDTextFieldWithTarget>
+	target:""
+
+<IconText>
+	orientation:"vertical"
+	icon:""
+	text:""
+	
+	
+	MDBoxLayout: 
+		orientation:"vertical"
+		
+		MDIcon: 
+			icon:root.icon
+			font_size: "50dp"
+			pos_hint:{"center_x":.5, "center_y":.5}
+			halign:"center"
+			valign:"center"
+			
+
+	MDBoxLayout: 
+		orientation:"vertical"
+		
+		MDLabel: 
+			text:root.text
+			font_size: "30dp"
+			pos_hint:{"center_x":.5, "center_y":.5}
+			halign:"center"
+			valign:"center"		
+			
+			
+<NoteCard>
+	elevation:0 
+	size_hint: .7, .6
+	md_bg_color: 1,1,1,.5
+	id:nc
+	pid:""
+	title:""
+	body:""
+	date:""
+	source:""
+	actual:""
+	ripple_behavior:True
+	on_release: 
+		app.show_content(self.title,self.body,self.date, self.actual)
+	
+	MDBoxLayout: 
+		orientation:"horizontal"
+		padding:"5dp"
+		
+		
+		MDBoxLayout: 
+			orientation:"vertical"
+			size_hint_x: .3
+			pos_hint: {"center_x":.5, "center_y":.5}
+			
+			MDAnchorLayout:
+				FitImage: 
+					source:root.source
+					size_hint: None, None
+					size: [nc.height//2]*2
+					radius:[30,30,30,30]
+					valign:"center"
+					pos_hint: {"center_x":.5, "center_y":.5}
+			
+		MDBoxLayout: 
+			orientation:"vertical"
+			size_hint_x:.7
+			padding:["0dp","3dp"]
+			
+			MDBoxLayout:
+				orientation:"vertical"
+				
+				MDLabel: 
+					text: root.title
+					font_name:app.profont
+				
+			MDBoxLayout:
+				orientation:"vertical"
+				
+				MDLabel: 
+					text: root.date
+					font_name:app.profont
+					
+			MDBoxLayout:
+				orientation:"horizontal"
+				
+				MDGridLayout: 
+					cols: 3 
+					rows:1
+					
+					MDIconButton: 
+						icon: "delete-outline"
+						id:icon1
+						on_release: 
+							app.delnote(root.pid, root.title)
+							
+					MDIconButton: 
+						icon: "content-copy"
+						id:icon2
+						on_release: 
+							app.copy_note(root.body)
+							
+						
+					MDIconButton:
+						icon:"pencil-outline"
+						id:icon3
+						on_release: 
+							app.edit_note(root.pid, root.title,root.body)
+				
+						
+
+<NoteViewer>
+	size_hint: .9,.9
+	elevation:0
+	md_bg_color: 1,1,1,.5
+	orientation:"vertical"
+	title:""
+	date:""
+	content:""
+	
+	ScrollView:
+	
+		MDGridLayout: 
+			cols:1
+			size_hint_y:None 
+			default_size_hint: 1, None
+			height: a.height + b.height + c.height + 300
+			spacing:"20dp"
+			padding:["10dp", "20dp", "10dp","0dp"]
+			
+			
+			MDBoxLayout: 
+				orientation:"vertical"
+				adaptive_height:True
+				id:a
+				padding:["2dp", "30dp", "2dp", "0dp"]
+				
+				MDLabel: 
+					adaptive_height:True
+					text: root.title
+					font_name:app.profont
+					
+				
+			MDBoxLayout: 
+				orientation:"vertical"
+				adaptive_height:True
+				id:b
+				padding:["2dp", "30dp", "2dp", "0dp"]
+				
+				MDLabel: 
+					text: "Created %s"%(root.date)
+					adaptive_height:True
+					font_name:app.profont
+				
+			MDBoxLayout: 
+				orientation:"vertical"
+				id:c
+				adaptive_height:True
+				padding:["2dp", "30dp", "2dp", "0dp"]
+	
+					
+				MDLabel: 
+					adaptive_height:True
+					font_name:app.profont
+					text: root.content
+					halign:"center"
+					multiline:True
+						
+
+MDNavigationLayout:
+
+	MyScreenManager: 
+		id:sm 
+		
+		Screen: 
+			name:"Login"
+			
+			MDBoxLayout: 
+				orientation:"vertical"
+				
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+						
+					Rectangle: 
+						size:self.size 
+						pos:self.pos 
+						source:app.smoke
+				
+				md_bg_color:"#F6F6F6"
+				
+				MDAnchorLayout: 
+					MDCard: 
+						elevation:0
+						md_bg_color: 1, 1, 1, .5
+						size_hint: .8, .6
+						orientation:"vertical"
+						padding:["10dp", "10dp", "10dp", "0dp"]
+						
+						MDBoxLayout: 
+							orientation:"vertical"
+							adaptive_height:True
+							
+													
+							MDLabel: 
+								font_style:"Caption"
+								text: "Login"
+								font_size:'24dp'
+								halign:"center"
+							
+							
+						MDGridLayout:
+							cols:1 
+							padding:["0dp", "5dp"]
+							
+							MDBoxLayout: 
+								orientation:"vertical"
+								
+							
+								MDTextField: 
+									adaptive_height:True
+									mode:"line" 
+									hint_text:"Username"
+									halign:"center"
+									line_width: .7
+									icon_right:"account"
+									line_anim:True
+									id:username
+									line_color:"#eeeeee"
+									
+							MDBoxLayout: 
+								orientation:"vertical"
+								PwdInput: 
+									id:password
+									hint_text:"Password"
+								
+									
+							
+									
+						MDAnchorLayout: 
+							MDFillRoundFlatIconButton: 
+								text:"Confirm"
+								icon:"check"
+								text_color:"white"
+								font_style:"Button"
+								icon_color:self.text_color
+								on_release: 
+									app.set_login_or_login(username.text,password.ids.mtf.text)
+	
+				
+		Screen: 
+			name:"Main"
+			
+			MDBottomNavigation: 
+				panel_color: .1,.1,.1,.7
+				text_color_normal: .5,.5,.5,.5
+				text_color_active: .6,.6,.6,.6
+				icon_color_active: 0,0,0,1
+				selected_color_background:.8,.8,.8,.08
+				id:bottomnav
+				
+				MDBottomNavigationItem:  
+					icon:"notebook" 
+					text:"Notes"		
+					name:"view"
+							
+					MDBoxLayout: 
+						orientation:'vertical'
+						canvas: 
+							Color: 
+								rgba: 1,1,1,1 
+							
+							Rectangle: 
+								pos:self.pos 
+								size:self.size 
+								source:app.smoke
+				
+						MDBoxLayout: 
+							orientation:"vertical"
+							adaptive_height:True
+								
+							TransparentBar:
+								id: bar1 
+								headline_text:"Notes"
+								type_height:"medium"
+								specific_text_color:"white" 
+								right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+								specific_font_name:app.profont
+								
+						MDBoxLayout:
+							orientation:"vertical"
+							
+							ScreenManager: 
+								id:sm2 
+								
+								Screen: 
+									name:"nonoteview"
+									MDAnchorLayout: 
+										MDCard: 
+											md_bg_color: 0,0,0,.7
+											elevation:0 
+											size_hint: .9,.6
+											orientation:"vertical"
+											
+											MDAnchorLayout:
+												IconText:
+													text:"No Notes"
+													icon:"notebook"
+													
+									MDFloatLayout: 
+										MDFloatingActionButton: 
+											icon:"plus"
+											pos_hint: {"center_x":.9, "center_y":.1}
+											md_bg_color: 1,1,1,.5
+											on_release: 
+												bottomnav.switch_tab("add")
+											
+											
+	
+											
+								Screen:
+									name:"noteview"
+									
+									RecycleView: 
+										key_size:"height" 
+										key_viewclass:"viewclass"
+										id:rv 
+										
+										RecycleBoxLayout: 
+											orientation:"vertical"
+											size_hint_y: None 
+											default_size_hint: 1, None 
+											height:self.minimum_height 
+											default_size: 1, dp(150)
+											spacing:"30dp"
+											padding:["10dp"]
+									
+																						
+											
+	
+				MDBottomNavigationItem: 
+					text:"Add Notes" 
+					icon:"notebook-plus"		
+					name:"add"
+					
+					MDBoxLayout: 
+						orientation:"vertical" 
+						canvas: 
+							Color: 
+								rgba: 1,1,1,1 
+								
+							Rectangle: 
+								size:self.size 
+								pos:self.pos 
+								source:app.smoke
+								
+						MDBoxLayout: 
+							orientation:"vertical" 
+							adaptive_height:True
+							
+							TransparentBar: 
+								headline_text:"Add Note"
+								type_height:"medium"
+								specific_text_color:"white" 
+								right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+								
+						MDBoxLayout:		
+							orientation:"vertical"
+							padding:["20dp"]
+							
+							md_bg_color: 1,1,1,.05 
+							
+							MDGridLayout: 
+								cols:1
+								spacing:"20dp"
+								
+										
+								MDBoxLayout: 
+									size_hint_y:.2
+									orientation:"vertical"
+						
+								
+									MDTextField: 
+										mode:"rectangle"	
+										fill_color: 1,1,1,.07	
+										md_bg_color:self.fill_color
+										hint_text:"Note Title"		
+										radius:[30,30,30,30]
+										id:notetitle
+										
+								MDBoxLayout: 
+									size_hint_y:.8
+				
+									orientation:"vertical"
+								
+									MDTextField: 
+										mode:"rectangle"	
+										fill_color: 1,1,1,.07	
+										
+										md_bg_color:self.fill_color
+								
+										hint_text:"Note Body"
+										pos_hint:{"center_x":.5,"center_y":.5}	
+										radius:[30,30,30,30]
+				
+										size_hint_y: .7
+										id: notebody
+										multiline:True
+										
+								
+						MDBoxLayout: 
+							orientation:"vertical" 
+				
+							
+							MDAnchorLayout: 
+								MDFillRoundFlatIconButton: 
+									text:"Save Note"		
+									icon:"content-save"
+									padding: 30	
+									width: "100dp"	
+									text_color:"white"
+									md_bg_color: 1,1,1,.5
+									on_release: 
+										app.save_note(notetitle,notebody)
+					
+	
+		Screen: 
+			name:"viewnote"
+			
+			MDBoxLayout: 
+				orientation:'vertical' 
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+							
+					Rectangle: 
+						pos:self.pos 
+						size:self.size 
+						source:app.smoke
+				
+				MDBoxLayout: 
+					orientation:"vertical"
+					adaptive_height:True
+								
+					TransparentBar:
+						id: bar2
+						headline_text:"Notes"
+						type_height:"medium"
+						specific_text_color:"white" 
+						right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+								
+				MDBoxLayout:
+					orientation:"vertical"
+					
+		Screen: 
+			name:"Opennote"
+			
+			MDBoxLayout: 
+				orientation:"vertical" 
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+								
+					Rectangle: 
+						size:self.size 
+						pos:self.pos 
+						source:app.smoke
+								
+				MDBoxLayout: 
+					orientation:"vertical" 
+					adaptive_height:True
+							
+					TransparentBar: 
+						headline_text:"Your Note"
+						type_height:"medium"
+						specific_text_color:"white" 
+						right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+						
+				MDAnchorLayout:
+					NoteViewer: 
+						id:nv
+						
+		Screen:
+			name:"edit"
+						
+			MDBoxLayout:  
+				orientation:"vertical" 
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+									
+					Rectangle: 
+						size:self.size 
+						pos:self.pos 
+						source:app.smoke
+									
+							
+				MDBoxLayout: 
+					orientation:"vertical" 
+					adaptive_height:True
+								
+					TransparentBar: 
+						headline_text:"Edit Note"
+						type_height:"medium"
+						specific_text_color:"white" 
+						right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+									
+				MDBoxLayout:		
+					orientation:"vertical"
+					padding:["20dp"]
+								
+					md_bg_color: 1,1,1,.05 
+								
+					MDGridLayout: 
+						cols:1
+						spacing:"20dp"
+									
+											
+						MDBoxLayout: 
+							size_hint_y:.2
+							orientation:"vertical"
+									
+							MDTextField: 
+								mode:"rectangle"	
+								fill_color: 1,1,1,.07	
+								md_bg_color:self.fill_color
+								hint_text:"Note Title"		
+								radius:[30,30,30,30]
+								id:edititle
+											
+						MDBoxLayout: 
+							size_hint_y:.8
+							orientation:"vertical"
+									
+							MDTextFieldWithTarget: 
+								mode:"rectangle"	
+								fill_color: 1,1,1,.07	
+								md_bg_color:self.fill_color
+								hint_text:"Note Body"		
+								radius:[30,30,30,30]
+								multiline: True
+								size_hint_y: .7
+								id: editbody
+											
+									
+							MDBoxLayout: 
+								orientation:"vertical" 
+					
+								
+								MDAnchorLayout: 
+									MDFillRoundFlatIconButton: 
+										text:"Save Changes"		
+										icon:"content-save"
+										padding: 30	
+										width: "100dp"	
+										text_color:"white"
+										md_bg_color: 1,1,1,.5
+										on_release: 
+											app.save_changes(edititle.text, editbody.text,editbody.target)
+						
+		Screen: 
+			name:"changepwd"			
+			
+			MDBoxLayout: 
+				orientation:"vertical" 
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+								
+					Rectangle: 
+						size:self.size 
+						pos:self.pos 
+						source:app.smoke
+								
+				MDBoxLayout: 
+					orientation:"vertical" 
+					adaptive_height:True
+							
+					TransparentBar: 
+						headline_text:"Change Password"
+						type_height:"medium"
+						specific_text_color:"white" 
+						right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+								
+				MDBoxLayout:		
+					orientation:"vertical"
+					padding:["20dp"]
+							
+					md_bg_color: 1,1,1,.05 
+							
+					MDGridLayout: 
+						cols:1
+						spacing:"20dp"
+								
+										
+						PwdInput: 
+							size_hint_y: .3
+							id:pwd1
+							hint_text:"Old Password"
+										
+						PwdInput:
+							size_hint_y: .3
+							id:pwd2
+							hint_text:"New Password"
+								
+						PwdInput:
+							size_hint_y: .3
+							id:pwd3
+							hint_text:"Confirm New Password"
+										
+								
+				MDBoxLayout: 
+					orientation:"vertical" 
+				
+							
+					MDAnchorLayout: 
+						MDRoundFlatIconButton: 
+							text:"Save New Password"		
+							padding: 30	
+							width: "100dp"	
+							text_color:"white"
+							md_bg_color: 1,1,1,.5
+							on_release: 
+								app.changepwd(pwd1,pwd2,pwd3)
+						
+		Screen: 
+			name:"credits"			
+			
+			MDBoxLayout: 
+				orientation:"vertical" 
+				canvas: 
+					Color: 
+						rgba: 1,1,1,1 
+								
+					Rectangle: 
+						size:self.size 
+						pos:self.pos 
+						source:app.smoke
+								
+				MDBoxLayout: 
+					orientation:"vertical" 
+					adaptive_height:True
+							
+					TransparentBar: 
+						headline_text:"Credits"
+						type_height:"medium"
+						specific_text_color:"white" 
+						right_action_items:[["menu", lambda x:nav.set_state("toggle"), "Navigation Menu"]]
+								
+				MDAnchorLayout:		
+					MDCard
+						orientation:"vertical"
+						size_hint: .8, .5 
+						md_bg_color: 1,1,1,.5
+						radius:["30dp"]
+						elevation:0
+						
+						MDBoxLayout
+							orientation:"vertical"
+							
+							MDBoxLayout: 
+								orientation:"vertical"
+								
+								Animage: 
+									size_hint: .5,.5
+									source: app.logo
+									pos_hint:{"center_x":.5, "center_y":.5}
+									id: animage
+							
+								
+							MDBoxLayout: 
+								orientation:"vertical"
+								adaptive_height:True
+								
+								MDLabel: 
+									text:"EmPya"
+									font_name:app.profont
+									font_size: "20dp"
+									halign:"center"
+									valign:self.halign
+									
+							MDBoxLayout: 
+								orientation:"vertical"
+								
+								MDLabel: 
+									text:"mobile and web apps developer"
+									font_name:app.profont
+									font_size: "15dp"
+									halign:"center"
+									valign:self.halign
+								
+					
+					
+										
+	MDNavigationDrawer:
+		id:nav	
+		md_bg_color: 1,1,1,.3
+		orientation:"vertical"	
+		type:"modal"
+		anchor:"left"
+		
+		MDGridLayout: 
+			cols: 1 
+			padding:[0,0,0,0]
+			spacing:"50dp"
+			
+			MDGridLayout: 
+				cols:1
+				adaptive_height:True
+				
+				MDGridLayout: 
+					cols:1
+					adaptive_height:True
+					
+					AnchorLayout:
+				
+						MDIcon: 
+							icon:"notebook"	
+							font_size:"50dp"
+							halign:"center"
+							pos_hint: {"center_x":.5, "center_y":.5}
+						
+				MDGridLayout: 
+					cols:1
+					adaptive_height:True
+				
+					MDLabel: 
+						text: "[b]Notes v 2.5.6[/b]"
+						markup:True
+						halign:"center" 
+						valign:"center"		
+						
+			MDGridLayout: 
+				cols: 1			
+				
+				
+				MDList: 
+					OneLineIconListItem: 
+						divider:"Inset"
+						line_width:0
+						text:"Home"
+						on_release: 
+							sm.current = "Main"
+						IconLeftWidget: 
+							icon:"home-outline"
+							
+							
+					OneLineIconListItem: 
+						text:"Change Password"
+						divider:"Inset"
+						on_release:
+							sm.current = "changepwd"
+						IconLeftWidget: 
+							icon:"key-outline"
+							
+							
+					OneLineIconListItem: 
+						text:"Clear All Notes"
+						divider:"Inset"
+						on_release: 
+							app.clear_notes()
+							
+						
+						IconLeftWidget: 
+							icon:"delete-outline"
+							
+					OneLineIconListItem: 
+						text:"Credit"
+						divider:"Inset"
+						on_release: 
+							sm.current = "credits"
+						
+						IconLeftWidget: 
+							icon:"diamond-outline"
+							
+							
+				MDBoxLayout: 
+					adaptive_height:True
+					padding:["0dp", "100dp", "0dp", "0dp"]
+					pos_hint:{"bottom":1}
+					
+					orientation:"vertical"	
+					MDLabel: 
+						adaptive_height:True
+						text:"Available Notes : 0 "
+						adaptive_height:True
+						halign:"center"
+						id:note_count 
+						pos_hint:{"center_y":.5}
+						
