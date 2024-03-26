@@ -1,0 +1,42 @@
+name: Build APK
+on: [push,pull_request]
+
+jobs:
+  build-android:
+    name: Build for Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Gradle Java Home 
+        uses: actions/setup-java@v2 
+        with:
+          java-version: '17' 
+          distribution: 'adopt' 
+          java-package: jdk             
+          architecture: x64            
+          check-latest: false
+          cache: 'maven'
+
+      - name: Build with Buildozer          
+        run: |
+          pip3 install --user --upgrade buildozer Cython virtualenv
+          export PATH=$PATH:~/.local/bin/
+          export APP_ANDROID_ACCEPT_SDK_LICENSE=1
+          export BUILDOZER_WARN_ON_ROOT=0
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev 
+          sudo apt-get install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev 
+          sudo apt-get install -y libunwind-dev libgstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good
+          sudo apt-get install build-essential libsqlite3-dev sqlite3 bzip2 libbz2-dev zlib1g-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev 
+          sudo apt-get install libffi-dev
+          pip3 install --user --upgrade pyjnius 
+          pip3 install cython==0.29.33
+       
+          buildozer android debug 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: bin/*.apk
