@@ -66,7 +66,7 @@ def snack(txt):
 	
 
 def Notify(title,msg): 
-	notification.notify(title=title,message=msg,app_icon="/data/data/org.test.notes/files/app/notification_icon.jpg")
+	notification.notify(title=title,message=msg,app_icon="/data/data/org.test.notes/files/app/icon.png")
 
 
 def alert(txt): 
