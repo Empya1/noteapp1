@@ -15,7 +15,6 @@ from kivymd.uix.bottomsheet import MDCustomBottomSheet
 from kivy.core.clipboard import Clipboard
 from kivymd.uix.snackbar import Snackbar
 
-
 try: 
 	from mysql import Database
 	
@@ -119,22 +118,6 @@ class NoteApp(MDApp):
 		self.theme_cls.material_style = "M2"
 		
 		self.testing = False
-		
-		try:
-			from android.permissions import check_permission
-			
-			if check_permission("android.permission.WRITE_EXTERNAL_STORAGE") == False:
-				Notify("Permission not granted", "app needs storage permission to function well")
-				self.get_running_app().stop()
-				
-			else: 
-				pass
-				
-					
-			self.testing = False
-			
-		except Exception as e: 
-			self.testing = True
 			
 		self.path = ("/data/data/org.test.notes/files/app/" if self.testing==False else "")
 		self.logo = self.path + "empya_logo.png"
@@ -145,12 +128,24 @@ class NoteApp(MDApp):
 	def on_start(self):
 				
 		try:  
-			from android.permissions import request_permissions, Permission 
+			from android.permissions import request_permissions, Permission, check_permission
 			request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
 			request_permissions([Permission.READ_EXTERNAL_STORAGE])
 			
 		except:  
 			alert("Permission request error")
+		
+		try:
+			if check_permission("android.permission.WRITE_EXTERNAL_STORAGE") == False: 
+				Notify("Permission not granted", "app needs storage permission to function well") 
+				alert("Please enable storage permission")
+				self.get_running_app().stop()
+				
+			else: 
+				pass
+				
+		except: 
+			pass
 				
 		try:  
 			self.db = Database("MyNotes")
