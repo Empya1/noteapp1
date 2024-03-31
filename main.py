@@ -66,7 +66,7 @@ def snack(txt):
 	
 
 def Notify(title,msg): 
-	notification.notify(title=title,message=msg,app_icon="/data/data/org.test.notes/files/app/icon.png")
+	notification.notify(title=title,message=msg,app_icon="/data/data/org.test.notes/files/app/notification_icon.jpg")
 
 
 def alert(txt): 
@@ -121,8 +121,16 @@ class NoteApp(MDApp):
 		self.testing = False
 		
 		try:
-			from android.permissions import Permission, request_permissions			
-			request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
+			from android.permissions import check_permission
+			
+			if check_permission("android.permission.WRITE_EXTERNAL_STORAGE") == False:
+				Notify("Permission not granted", "app needs storage permission to function well")
+				self.get_running_app().stop()
+				
+			else: 
+				pass
+				
+					
 			self.testing = False
 			
 		except Exception as e: 
