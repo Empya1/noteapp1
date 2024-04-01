@@ -128,24 +128,13 @@ class NoteApp(MDApp):
 	def on_start(self):
 				
 		try:  
-			from android.permissions import request_permissions, Permission, check_permission
+			from android.permissions import request_permissions, Permission
+			
 			request_permissions([Permission.WRITE_EXTERNAL_STORAGE])
-			request_permissions([Permission.READ_EXTERNAL_STORAGE])
 			
 		except:  
 			alert("Permission request error")
 		
-		try:
-			if check_permission("android.permission.WRITE_EXTERNAL_STORAGE") == False: 
-				Notify("Permission not granted", "app needs storage permission to function well") 
-				alert("Please enable storage permission")
-				self.get_running_app().stop()
-				
-			else: 
-				pass
-				
-		except: 
-			pass
 				
 		try:  
 			self.db = Database("MyNotes")
