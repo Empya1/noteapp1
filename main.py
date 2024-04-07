@@ -1,4 +1,4 @@
-
+import os
 from kivymd.app import MDApp
 from kivy.lang import Builder 
 from kivy.base import EventLoop
@@ -14,6 +14,9 @@ from kivy.uix.screenmanager import WipeTransition,FadeTransition, ScreenManager
 from kivymd.uix.bottomsheet import MDCustomBottomSheet
 from kivy.core.clipboard import Clipboard
 from kivymd.uix.snackbar import Snackbar
+
+def get_path(fn): 
+	return os.path.join(os.path.dirname(__file__), fn)
 
 try: 
 	from mysql import Database
@@ -65,7 +68,7 @@ def snack(txt):
 	
 
 def Notify(title,msg): 
-	notification.notify(title=title,message=msg,app_icon="/data/data/org.test.notes/files/app/notification_icon.jpg")
+	notification.notify(title=title,message=msg,app_icon=get_path("notification_icon.jpg"))
 
 
 def alert(txt): 
@@ -117,12 +120,16 @@ class NoteApp(MDApp):
 		self.theme_cls.primary_hue = "400"
 		self.theme_cls.material_style = "M2"
 		
-		self.testing = False
+		self.testing = True
 			
 		self.path = ("/data/data/org.test.notes/files/app/" if self.testing==False else "")
-		self.logo = self.path + "empya_logo.png"
-		self.smoke = self.path + "smoke.jpg"
-		self.profont = self.path + "profont"
+		
+		self.logo = get_path("empya_logo.png")
+		
+		self.smoke = get_path("smoke.jpg")
+		
+		self.profont = get_path("profont")
+		
 		return Builder.load_file("app.kv")
 		
 	def on_start(self):
@@ -137,7 +144,7 @@ class NoteApp(MDApp):
 		
 				
 		try:  
-			self.db = Database("MyNotes")
+			self.db = Database(get_path("MyNotes"))
 			
 		except: 
 			pass
@@ -186,7 +193,7 @@ class NoteApp(MDApp):
 			"""alert("importing shelve file")
 			import shelve
 			alert("creating shelve file")"""
-			self.store = shelve.open("appData")
+			self.store = shelve.open(get_path("appData"))
 			
 		except: 
 			alert("unknown error")
@@ -374,7 +381,7 @@ class NoteApp(MDApp):
 		#alert(txt)
 		
 			
-		self.db.insert("Notes", [(id, str(title.text), txt, date_and_time, self.path+img)])
+		self.db.insert("Notes", [(id, str(title.text), txt, date_and_time, get_path(img))])
 		
 		if len(self.db.select_all("Notes")) == 0: 
 			self.root.ids.sm2.current = "nonoteview"
