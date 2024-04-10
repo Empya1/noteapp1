@@ -56,6 +56,11 @@ try:
 	from sqlite3 import Error
 except: 
 	pass
+	
+try:
+	import hashlib
+except: 
+	pass
 
 # database class
 
@@ -73,6 +78,14 @@ def Notify(title,msg):
 
 def alert(txt): 
 	toast(gravity=80, y=150, text=str(txt))
+	
+
+def encrypt(text):
+
+	byte_text = text.encode() 
+	hash = hashlib.sha256(byte_text)
+	encrypted_text = hash.hexdigest()
+	return encrypted_text
 	
 class MyBs(MDBoxLayout): 
 	pass
@@ -318,7 +331,7 @@ class NoteApp(MDApp):
 #			return True
 	
 		try: 
-			if name == self.store["name"] and pwd == self.store["pwd"]: 
+			if encrypt(name) == self.store["name"] and encrypt(pwd) == self.store["pwd"]: 
 				self.root.ids.sm.current = "Main"
 				
 			else: 
@@ -329,8 +342,8 @@ class NoteApp(MDApp):
 				
 		except: 
 			try:
-				self.store["name"] = name 
-				self.store["pwd"] = pwd
+				self.store["name"] = encrypt(name) 
+				self.store["pwd"] = encrypt(pwd)
 				alert("password and username set")
 				Notify("Username and Password Set","You may now login")
 				snack("Enter the password you just set")
