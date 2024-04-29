@@ -34,7 +34,7 @@ jobs:
           pip3 install --user --upgrade pyjnius 
           pip3 install cython==0.29.33
        
-          buildozer android release
+          buildozer android debug
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
